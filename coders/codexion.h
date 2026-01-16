@@ -6,17 +6,18 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 15:50:03 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/16 13:56:09 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/16 14:25:47 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 # include <pthread.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <stdio.h>
 # include <sys/time.h>
+# include <unistd.h>
 
 typedef struct s_dongle
 {
@@ -58,11 +59,12 @@ typedef struct t_data
 	long long		start_time;
 }					t_data;
 
-int	parse_args(t_data *data, char **argv);
-int	init_data(t_data *data);
-long long get_time(void);
-void	create_threads(t_data *data);
-void    join_threads(t_data *data);
-void smart_sleep(long long time, t_data *data);
+int					parse_args(t_data *data, char **argv);
+int					init_data(t_data *data);
+long long			get_time(void);
+void				create_threads(t_data *data);
+void				join_threads(t_data *data);
+void				smart_sleep(long long time);
+void				print_status(char *str, t_coder *coder);
 
 #endif

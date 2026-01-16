@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:46:17 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/15 18:46:45 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/16 13:41:23 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ static void	init_coders_dongles(t_data *data)
 			% data->number_of_coders];
 		data->coders[i].compile_count = 0;
 		data->coders[i].last_compile_time = 0;
+		data->coders[i].data = data;
 		i++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 18:07:12 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/15 18:45:30 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/16 13:58:08 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,8 @@ int	main(int argc, char **argv)
 			(void *)data.coders[i].right_dongle);
 		i++;
 	}
+	data.start_time = get_time();
+	printf("Current time: %lld ms\n", data.start_time);
+	create_threads(&data);
+	join_threads(&data);
 }

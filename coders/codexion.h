@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 15:50:03 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/16 14:25:47 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/16 18:05:44 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct t_data
 	pthread_mutex_t	print_lock;
 	pthread_mutex_t	sim_lock;
 	long long		start_time;
+	pthread_t		monitor;
 }					t_data;
 
 int					parse_args(t_data *data, char **argv);
@@ -66,5 +67,11 @@ void				create_threads(t_data *data);
 void				join_threads(t_data *data);
 void				smart_sleep(long long time);
 void				print_status(char *str, t_coder *coder);
+void				*monitor_routine(void *arg);
+long long			get_last_compile_time(t_coder *coder);
+void				set_last_compile_time(t_coder *coder, long long time);
+int					get_compile_count(t_coder *coder);
+void				increment_compile_count(t_coder *coder);
+int					is_simulation_over(t_data *data);
 
 #endif

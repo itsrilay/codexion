@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:46:17 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/16 14:19:03 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:47:44 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,8 @@ int	parse_args(t_data *data, char **argv)
 
 int	init_data(t_data *data)
 {
-	int	i;
-
-	i = 0;
+	data->is_over = 0;
+	data->queue_head = NULL;
 	data->coders = malloc(sizeof(t_coder) * data->number_of_coders);
 	if (!data->coders)
 		return (1);
@@ -57,6 +56,9 @@ static void	init_coders_dongles(t_data *data)
 	while (i < data->number_of_coders)
 	{
 		pthread_mutex_init(&data->dongles[i].lock, NULL);
+		pthread_cond_init(&data->coders[i].wait_cond, NULL);
+		data->dongles[i].is_available = 1;
+		data->dongles[i].next_available_time = data->dongle_cooldown;
 		data->coders[i].id = i + 1;
 		data->coders[i].time_to_burnout = data->time_to_burnout;
 		data->coders[i].time_to_compile = data->time_to_compile;

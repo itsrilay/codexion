@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 17:14:59 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/16 18:06:12 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/19 17:42:24 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static int	monitor_cycle(t_data *data);
 void	*monitor_routine(void *arg)
 {
 	t_data	*data;
+	int		i;
 
 	data = (t_data *)arg;
 	while (!is_simulation_over(data))
@@ -28,6 +29,14 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_unlock(&data->print_lock);
 		}
 		usleep(1000);
+	}
+	i = 0;
+	while (i < data->number_of_coders)
+	{
+		pthread_mutex_lock(&data->sim_lock);
+		pthread_cond_signal(&data->coders[i].wait_cond);
+		pthread_mutex_unlock(&data->sim_lock);
+		i++;
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 15:50:03 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/16 18:05:44 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:17:29 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,57 +21,69 @@
 
 typedef struct s_dongle
 {
-	pthread_mutex_t	lock;
-	long long		next_available_time;
-}					t_dongle;
+	pthread_mutex_t		lock;
+	long long			next_available_time;
+	int					is_available;
+}						t_dongle;
 
 typedef struct s_coder
 {
-	int				id;
-	int				compile_count;
-	long long		time_to_burnout;
-	int				time_to_compile;
-	int				time_to_debug;
-	int				time_to_refactor;
-	int				compiles_required;
-	long long		last_compile_time;
-	t_dongle		*left_dongle;
-	t_dongle		*right_dongle;
-	pthread_t		thread;
-	struct t_data	*data;
-}					t_coder;
+	int					id;
+	int					compile_count;
+	long long			time_to_burnout;
+	int					time_to_compile;
+	int					time_to_debug;
+	int					time_to_refactor;
+	int					compiles_required;
+	long long			last_compile_time;
+	t_dongle			*left_dongle;
+	t_dongle			*right_dongle;
+	pthread_t			thread;
+	struct t_data		*data;
+	pthread_cond_t		wait_cond;
+}						t_coder;
+
+typedef struct s_wait_node
+{
+	t_coder				*coder;
+	struct s_wait_node	*next;
+}						t_wait_node;
 
 typedef struct t_data
 {
-	t_coder			*coders;
-	t_dongle		*dongles;
-	long long		time_to_burnout;
-	int				time_to_compile;
-	int				time_to_debug;
-	int				time_to_refactor;
-	int				compiles_required;
-	int				dongle_cooldown;
-	int				is_over;
-	int				number_of_coders;
-	int				scheduler;
-	pthread_mutex_t	print_lock;
-	pthread_mutex_t	sim_lock;
-	long long		start_time;
-	pthread_t		monitor;
-}					t_data;
+	t_coder				*coders;
+	t_dongle			*dongles;
+	long long			time_to_burnout;
+	int					time_to_compile;
+	int					time_to_debug;
+	int					time_to_refactor;
+	int					compiles_required;
+	int					dongle_cooldown;
+	int					is_over;
+	int					number_of_coders;
+	int					scheduler;
+	pthread_mutex_t		print_lock;
+	pthread_mutex_t		sim_lock;
+	long long			start_time;
+	pthread_t			monitor;
+	t_wait_node			*queue_head;
+}						t_data;
 
-int					parse_args(t_data *data, char **argv);
-int					init_data(t_data *data);
-long long			get_time(void);
-void				create_threads(t_data *data);
-void				join_threads(t_data *data);
-void				smart_sleep(long long time);
-void				print_status(char *str, t_coder *coder);
-void				*monitor_routine(void *arg);
-long long			get_last_compile_time(t_coder *coder);
-void				set_last_compile_time(t_coder *coder, long long time);
-int					get_compile_count(t_coder *coder);
-void				increment_compile_count(t_coder *coder);
-int					is_simulation_over(t_data *data);
+int						parse_args(t_data *data, char **argv);
+int						init_data(t_data *data);
+long long				get_time(void);
+void					smart_sleep(long long time);
+void					print_status(char *str, t_coder *coder);
+void					*monitor_routine(void *arg);
+void					*coder_routine(void *arg);
+long long				get_last_compile_time(t_coder *coder);
+void					set_last_compile_time(t_coder *coder, long long time);
+int						get_compile_count(t_coder *coder);
+void					increment_compile_count(t_coder *coder);
+int						is_simulation_over(t_data *data);
+int						enqueue_coder(t_data *data, t_coder *coder);
+void					dequeue_coder(t_data *data, t_coder *coder);
+struct timespec			ms_to_timespec(long long timestamp_in_ms);
+struct timespec			get_next_available_timespec(t_coder *coder);
 
 #endif

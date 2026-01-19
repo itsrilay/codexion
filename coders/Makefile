@@ -11,7 +11,8 @@ SRC = \
 	$(SRC_DIR)utils.c \
 	$(SRC_DIR)sim.c \
 	$(SRC_DIR)monitor.c \
-	$(SRC_DIR)get_set.c
+	$(SRC_DIR)get_set.c \
+	$(SRC_DIR)queue.c
 
 # ==== OBJECTS ====
 OBJS = $(SRC:%.c=%.o)

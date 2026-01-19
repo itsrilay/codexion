@@ -6,13 +6,15 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 18:07:12 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/16 18:47:22 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:47:58 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
 static void	cleanup(t_data *data);
+static void	create_threads(t_data *data);
+static void	join_threads(t_data *data);
 
 int	main(int argc, char **argv)
 {
@@ -37,14 +39,42 @@ int	main(int argc, char **argv)
 	cleanup(&data);
 }
 
+static void	create_threads(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_coders)
+	{
+		pthread_create(&data->coders[i].thread, NULL, coder_routine,
+			&data->coders[i]);
+		i++;
+	}
+	pthread_create(&data->monitor, NULL, monitor_routine, data);
+}
+
+static void	join_threads(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->number_of_coders)
+	{
+		pthread_join(data->coders[i].thread, NULL);
+		i++;
+	}
+	pthread_join(data->monitor, NULL);
+}
+
 static void	cleanup(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < data->number_of_coders)
 	{
 		pthread_mutex_destroy(&data->dongles[i].lock);
+		pthread_cond_destroy(&data->coders[i].wait_cond);
 		i++;
 	}
 	pthread_mutex_destroy(&data->print_lock);

@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/16 12:04:34 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/20 17:55:35 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:43:39 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void	return_dongles(t_data *data, t_coder *coder)
 	node = data->queue_head;
 	while (node)
 	{
-		pthread_cond_signal(&node->coder->wait_cond);
+		pthread_cond_broadcast(&node->coder->wait_cond);
 		node = node->next;
 	}
 	pthread_mutex_unlock(&data->sim_lock);

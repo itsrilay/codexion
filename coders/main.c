@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 18:07:12 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/19 19:47:58 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/20 13:19:22 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ int	main(int argc, char **argv)
 	t_data	data;
 	int		i;
 
-	(void)argc;
-	i = 0;
+	if (argc != 9)
+		return (fprintf(stderr, "ERROR: Wrong number of arguments\n"), 1);
 	if (parse_args(&data, argv) == 1)
-		return (fprintf(stderr, "ERROR: Parsing Error"), 1);
+		return (fprintf(stderr, "ERROR: Parsing Error\n"), 1);
 	if (init_data(&data) == 1)
-		return (fprintf(stderr, "ERROR: Malloc Error"), 1);
+		return (fprintf(stderr, "ERROR: Malloc Error\n"), 1);
 	data.start_time = get_time();
 	i = 0;
 	while (i < data.number_of_coders)

@@ -15,7 +15,8 @@ SRC = \
 	$(SRC_DIR)queue.c
 
 # ==== OBJECTS ====
-OBJS = $(SRC:%.c=%.o)
+OBJ_DIR = obj/
+OBJS = $(addprefix $(OBJ_DIR), $(SRC:%.c=%.o))
 
 # ==== INCLUDES ====
 INC = .
@@ -29,13 +30,17 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(INC_FLAGS) $(OBJS) -o $(NAME)
 
+# ==== OBJECT DIRECTORY
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
 # ==== COMPILE OBJECTS ====
-%o: %.c
+obj/%.o: %.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(INC_FLAGS) -c $< -o $@
 
 # ==== CLEAN ====
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)

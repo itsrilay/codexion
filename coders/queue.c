@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 12:43:10 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/19 17:49:03 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:33:17 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void	dequeue_coder(t_data *data, t_coder *coder)
 	t_wait_node	*node;
 	t_wait_node	*prev;
 
+	if (!data->queue_head)
+		return ;
 	node = data->queue_head;
 	if (node->coder == coder)
 	{
@@ -55,8 +57,11 @@ void	dequeue_coder(t_data *data, t_coder *coder)
 		prev = node;
 		node = node->next;
 	}
-	prev->next = node->next;
-	free(node);
+	if (node)
+	{
+		prev->next = node->next;
+		free(node);
+	}
 }
 
 static void	enqueue_fifo(t_data *data, t_wait_node *node)

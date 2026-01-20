@@ -6,14 +6,14 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 18:07:12 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/20 13:19:22 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:40:23 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
 static void	cleanup(t_data *data);
-static void	create_threads(t_data *data);
+static int	create_threads(t_data *data);
 static void	join_threads(t_data *data);
 
 int	main(int argc, char **argv)
@@ -23,9 +23,9 @@ int	main(int argc, char **argv)
 
 	if (argc != 9)
 		return (fprintf(stderr, "ERROR: Wrong number of arguments\n"), 1);
-	if (parse_args(&data, argv) == 1)
+	if (parse_args(&data, argv))
 		return (fprintf(stderr, "ERROR: Parsing Error\n"), 1);
-	if (init_data(&data) == 1)
+	if (init_data(&data))
 		return (fprintf(stderr, "ERROR: Malloc Error\n"), 1);
 	data.start_time = get_time();
 	i = 0;
@@ -34,23 +34,34 @@ int	main(int argc, char **argv)
 		data.coders[i].last_compile_time = data.start_time;
 		i++;
 	}
-	create_threads(&data);
+	if (create_threads(&data))
+	{
+		join_threads(&data);
+		return (fprintf(stderr, "ERROR: Thread Creation Error\n"), 1);
+	}
 	join_threads(&data);
 	cleanup(&data);
 }
 
-static void	create_threads(t_data *data)
+static int	create_threads(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	while (i < data->number_of_coders)
 	{
-		pthread_create(&data->coders[i].thread, NULL, coder_routine,
-			&data->coders[i]);
+		if (pthread_create(&data->coders[i].thread, NULL, coder_routine,
+				&data->coders[i]) != 0)
+		{
+			data->number_of_coders = i;
+			return (1);
+		}
 		i++;
 	}
-	pthread_create(&data->monitor, NULL, monitor_routine, data);
+	if (pthread_create(&data->monitor, NULL, monitor_routine, data) != 0)
+		return (1);
+	data->monitor_created = 1;
+	return (0);
 }
 
 static void	join_threads(t_data *data)
@@ -63,7 +74,8 @@ static void	join_threads(t_data *data)
 		pthread_join(data->coders[i].thread, NULL);
 		i++;
 	}
-	pthread_join(data->monitor, NULL);
+	if (data->monitor_created == 1)
+		pthread_join(data->monitor, NULL);
 }
 
 static void	cleanup(t_data *data)

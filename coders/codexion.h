@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 15:50:03 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/20 13:08:29 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:00:32 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ typedef struct t_data
 	pthread_mutex_t		sim_lock;
 	long long			start_time;
 	pthread_t			monitor;
+	int					monitor_created;
 	t_wait_node			*queue_head;
 }						t_data;
 

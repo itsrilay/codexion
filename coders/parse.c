@@ -6,7 +6,7 @@
 /*   By: ruisilva <ruisilva@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 16:46:17 by ruisilva          #+#    #+#             */
-/*   Updated: 2026/01/20 13:09:59 by ruisilva         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:18:43 by ruisilva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	parse_args(t_data *data, char **argv)
 	data->time_to_refactor = parse_int(argv[5]);
 	data->compiles_required = parse_int(argv[6]);
 	data->dongle_cooldown = parse_int(argv[7]);
-	if (data->number_of_coders < 1 || data->time_to_burnout < 0
+	if (data->number_of_coders < 1 || data->time_to_burnout < 1
 		|| data->time_to_compile < 0 || data->time_to_debug < 0
 		|| data->time_to_refactor < 0 || data->compiles_required < 0
 		|| data->dongle_cooldown < 0)
@@ -42,6 +42,7 @@ int	init_data(t_data *data)
 {
 	data->is_over = 0;
 	data->queue_head = NULL;
+	data->monitor_created = 0;
 	data->coders = malloc(sizeof(t_coder) * data->number_of_coders);
 	if (!data->coders)
 		return (1);

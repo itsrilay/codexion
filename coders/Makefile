@@ -30,7 +30,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(INC_FLAGS) $(OBJS) -o $(NAME)
 
-# ==== OBJECT DIRECTORY
+# ==== OBJECT DIRECTORY ====
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 

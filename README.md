@@ -40,7 +40,7 @@ This simulation robustly addresses standard concurrency issues to ensure stabili
 
 - **Deadlock Prevention (Coffman's Conditions)**: To prevent circular dependencies where every coder holds one dongle and waits for another, the solution implements a **Resource Hierarchy** strategy. By enforcing a strict locking order (coders always attempt to lock the dongle with the higher memory address first), the "Circular Wait" condition is mathematically impossible.
 
-- **Starvation Prevention**: A custom **FIFO (First-In-First-Out) Queue** is implemented to manage dongle requests. When dongles are busy, coders are added to a waiting list. This ensures fairness: no coder can be indefinitely bypassed by faster threads, preventing starvation even under high load.
+- **Starvation Prevention (Custom Scheduler)**: A dynamic waiting queue manages dongle requests using two distinct arbitration policies. The **FIFO (First-In-First-Out)** policy ensures strict fairness, meaning no coder can be bypassed indefinitely by faster threads. Alternatively, the **EDF (Earliest Deadline First)** policy prioritizes coders based on urgency, granting access to the coder whose burnout deadline is approaching fastest. Both mechanisms effectively prevent thread starvation and guarantee system liveness even under high load.
 
 - **Precise Burnout Detection**: A dedicated **Monitor Thread** continuously scans the state of all coders. It utilizes a mutex-protected heartbeat mechanism (`last_compile_time`) to detect inactivity. If a coder fails to compile within the `time_to_burnout` window (adjusted for execution delay), the monitor instantly flags the simulation as "burned out" and halts execution.
 

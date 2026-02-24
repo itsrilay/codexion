@@ -12,6 +12,7 @@ The challenge is one of resource management and synchronization. To **compile** 
 To compile the `codexion` program:
 
 ```bash
+cd coders
 make
 ```
 
